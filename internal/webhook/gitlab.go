@@ -6,8 +6,6 @@ import (
 	"net/http"
 )
 
-// GitLabPayload represents only the pieces of the incoming JSON we actually care about.
-// Go's json.Unmarshal will happily ignore everything else.
 type GitLabPayload struct {
 	ObjectKind string `json:"object_kind"`
 	Ref        string `json:"ref"`
@@ -24,14 +22,12 @@ func HandleGitLabWebhook(expectedToken string) http.HandlerFunc {
 			return
 		}
 
-		// Extract the secret token from headers
 		incomingToken := r.Header.Get("X-Gitlab-Token")
 		if incomingToken == "" {
 			http.Error(w, "Missing security token", http.StatusUnauthorized)
 			return
 		}
 
-		// Constant-time cryptographic comparison
 		if subtle.ConstantTimeCompare([]byte(incomingToken), []byte(expectedToken)) != 1 {
 			http.Error(w, "Unauthorized payload", http.StatusUnauthorized)
 			return
@@ -49,8 +45,6 @@ func HandleGitLabWebhook(expectedToken string) http.HandlerFunc {
 			w.Write([]byte("Event ignored: not a push event"))
 			return
 		}
-
-		// TODO: Pass this payload to a Go channel/worker queue so the HTTP request doesn't hang!
 
 		w.WriteHeader(http.StatusAccepted)
 		w.Write([]byte("Webhook received, deployment triggered asynchronously"))
