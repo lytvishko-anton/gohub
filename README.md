@@ -25,3 +25,20 @@ gohub/
 │   └── deploy.sh         # Target shell deployment script
 ├── Dockerfile            # Optimized multi-stage Docker file
 └── docker-compose.yml    # Declarative runtime specifications
+
+```
+---
+
+## Quick Start
+1. Configuration
+Define your cryptographic webhook secrets inside the local environment setup within docker-compose.yml:
+```text
+environment:
+  - PORT=8080
+  - GITHUB_WEBHOOK_SECRET=your_secure_github_hmac_key
+  - GITLAB_WEBHOOK_SECRET=your_secure_gitlab_token
+```
+2. Execution
+```text
+docker-compose up --build
+```
