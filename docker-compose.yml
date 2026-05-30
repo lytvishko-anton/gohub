@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  deployer:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - GITHUB_WEBHOOK_SECRET=your_girhub_webhook_secret_here
+      - GITLAB_WEBHOOK_SECRET=your_gitlab_webhook_secret_here
+    volumes:
+      - ./scripts:/root/scripts
